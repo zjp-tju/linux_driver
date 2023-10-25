@@ -49,3 +49,12 @@
 芯片厂商只修改内核中的dtb，而手机厂商只修改dtbo分区
 
 # #dtbo编译
+       多 DTBO 结构，编译时同一个 BSP_BUILD_FAMILY 下的多个 DTBO 都会打包到 dtbo.img 中。以 SC9863A 为例，图 图 1-1 为其多 DTBO 结构，其中 sp9863a-3h10-overlay.dtbo-base、sp9863a-1c10-overlay.dtbo-base 和 sp9863a-1h10-overlay.dtbo-base 指定的 sp9863a.dtb 都会编译并打包到 dtb.img 中。
+
+![图 0](../images/0bfc10852f892ad5eb9dc223b1d51d5d276ee02443ebe22df0169176d0a2ecbb.png)  
+
+     U-Boot 在启动时，它会匹配 DTBO 并将其内容合入或者覆盖到匹配的 DTB 中，随后加载到 DDR，再将地址传给 Kernel.
+     dtb.img 在 boot header V2 时会打包到 boot.img，而在 boot header V3/V4 时会打包到 vendorboot.img。
+     系统引入 DTBO 后，设备树分割为两部分：
+      Native DT：Vendor 供应商提供的 SoC 公用部分和 Vendor 默认配置。
+      Overlay DT：ODM/OEM 提供的专属配置或客制化差异配置。 
