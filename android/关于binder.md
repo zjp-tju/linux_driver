@@ -59,6 +59,9 @@ String8 ProcessState::makeBinderThreadName() {
     return name;
 }
 
+格式参考
+![图 2](../images/2ff67e4fb3de3f3c28fc4096d7426e5504c79250148b8b695f2683cfdac76542.png)  
+
 
 ```
 ## 运行线程
@@ -66,3 +69,5 @@ String8 ProcessState::makeBinderThreadName() {
     #03 pc 000000000006cbe0  /system/lib64/libbinder.so (android::IPCThreadState::getAndExecuteCommand
     #04 pc 000000000006d538  /system/lib64/libbinder.so (android::IPCThreadState::joinThreadPool(bool)
     talkWithDriver函数的作用是把IPCThreadState类中的mOut变量保存的数据通过ioctl函数发送到驱动，同时把驱动返回的数据放到类的mIn变量中。
+
+    直观理解上就是与client与server binder通信时候，会创建一个单独的hwbinder线程去处理，clinet同时会等待binder的返回
