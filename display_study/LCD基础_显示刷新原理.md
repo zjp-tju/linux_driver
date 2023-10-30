@@ -58,13 +58,19 @@ u32 flag;
 
 ## 3.时序角度分析显示原理
 a.显示从矩形左上角的第一行第一个点开始(Vsync脉冲开始的位置)，一个点一个点的在LCD上显示，在上面的时序图上用时间线表示就为PCLK，我们称之为像素时钟信号；
+
 b.当显示指针一直显示到矩形的右边就结束这一行，那么这一行的动作在上面的时序图中就称之为1 Line；
+
 c.接下来显示指针又回到矩形的左边从第二行开始显示，注意，显示指针在从第一行的右边回到第二行的左边是需要一定的时间的，我们称之为行切换,表示为时序图上的HSYNC。
+
 d.如此类推，显示指针就这样一行一行(Line)的显示至矩形的右下角才把一副图显示完成。
+
 e.然而，LCD的显示并不是对一副图像快速的显示一下，为了持续和稳定的在LCD上显示，就需要切换到另一幅图上,这一副一副的图像就称之为帧(Frame)
+
 f.同样的，在帧与帧切换之间也是需要一定的时间的，我们称之为帧切换，表示为时序图上的VSYNC。
 
 ## 4.LCD 常用的计算
+```c
 1. Pixelclock
 Pixelclock（Pclk），也称RGB clk ，单位常用 Mhz
 #此处直接使用Pclk，表示Pixelclock频率值
@@ -87,8 +93,10 @@ Mipiclock = [(width+hsync+hfp+hbp)x(height+vsync+vfp+vbp)] x bus_width x fps / l
 "width 水平方向上的有效像素;    height 垂直方向上的有效行;  bus_width 数据总线位宽，即bpp； fps刷新率(帧率)       "
 Frame_Bit = (width+hsync+hfp+hbp) x (height+vsync+vfp+vbp) x bpp  "一帧画面的数据量为(单位bit)"
 一秒钟内需要传输的数据量为(单位bps)：FRAME_BIT  x  fps（帧率）
+```
 
 4. RGB sync
+```c
 "假设："
 T_Pclk  "表示pclk时钟周期"
 T_Hsync "表示hsync时钟周期"
@@ -105,9 +113,10 @@ Pclk =  (H-Total-pixel * V-Total-line) * Vsync  "vsync值和Refresh值相等"
 Pclk =  (H-Total-pixel * V-Total-line) * Refresh
 Hsync = V-Total-line * Vsync    "vsync与hsync的计算关系，对比实际量测信号大小，判断信号正常与否"
 Vsync = Pclk / (H-Total-pixel * V-Total-line) "通过pixelclock值和porch参数，计算刷新率refresh"
-
+```
 
 ## S3C2410开发板上的LCD
+```c
 重要的结构
 fb_var_screeninfo
 struct fb_var_screeninfo {
@@ -132,6 +141,7 @@ struct fb_var_screeninfo {
   __u32 rotate;  /* 显存旋转角度，一般不用angle we rotate counter clockwise */
   __u32 reserved[5];  /* Reserved for future compatibility */
 };
+```
 Linux对LCD的抽象如下图所示：
 ![图 4](../images/fe0a5f9f7c094bd48cc518053a1b90faa2de72b74e4eba4a8e5047bd99e46c8a.png)  
 
